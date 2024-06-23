@@ -19,9 +19,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Controllers\" />
-      <Folder Include="Repositories\" />
-      <Folder Include="Services\" />
+      <Folder Include="ResponseModels\" />
     </ItemGroup>
 
 </Project>
