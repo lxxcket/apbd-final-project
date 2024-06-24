@@ -21,9 +21,9 @@ public class IndividualCustomerRepository : IIndividualCustomerRepository
         return individualCustomer.Id;
     }
 
-    public async Task<int> UpdateCustomer(int id, IndividualCustomer individualCustomer, CancellationToken cancellationToken)
+    public async Task<int> UpdateCustomer(int pesel, IndividualCustomer individualCustomer, CancellationToken cancellationToken)
     {
-        var affectedRows = await _context.IndividualCustomers.Where(e => e.Id == id)
+        var affectedRows = await _context.IndividualCustomers.Where(e => e.PESEL == pesel)
             .ExecuteUpdateAsync(updates =>
                 updates.SetProperty(customer => customer.FirstName, individualCustomer.FirstName)
                     .SetProperty(customer => customer.LastName, individualCustomer.LastName)
@@ -33,15 +33,16 @@ public class IndividualCustomerRepository : IIndividualCustomerRepository
         return affectedRows;
     }
 
-    public async Task DeleteCustomer(int id, CancellationToken cancellationToken)
+    public async Task DeleteCustomer(int pesel, CancellationToken cancellationToken)
     {
-        var customer = await _context.IndividualCustomers.FindAsync(id);
-        if (customer == null)
-        {
-            throw new DomainException("Customer with given id was not found");
-        }
-
-        customer.IsDeleted = true;
+        var customer = await _context.IndividualCustomers.FirstOrDefaultAsync(c => c.PESEL == pesel, cancellationToken);
+        
+        customer!.IsDeleted = true;
         await _context.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task<IndividualCustomer?> GetIndividualCustomerByPesel(int pesel, CancellationToken cancellationToken)
+    {
+        return await _context.IndividualCustomers.FirstOrDefaultAsync(c => c.PESEL == pesel, cancellationToken);
     }
 }
