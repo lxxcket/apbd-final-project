@@ -1,3 +1,4 @@
+using APBDFinalProject.Exceptions;
 using APBDFinalProject.Models;
 using APBDFinalProject.Repositories;
 using APBDFinalProject.RequestModels;
@@ -16,6 +17,7 @@ public class BusinessCustomerService : IBusinessCustomerService
 
     public async Task<int> AddCustomer(BusinessCustomerRequest businessCustomer, CancellationToken cancellationToken)
     {
+        await BusinessCustomerWithGivenKrsAlreadyExists(businessCustomer.KRS, cancellationToken);
         return await _businessCustomerRepository.AddCustomer(new BusinessCustomer()
         {
             Address = businessCustomer.Address,
@@ -26,14 +28,33 @@ public class BusinessCustomerService : IBusinessCustomerService
         }, cancellationToken);
     }
 
-    public async Task<int> UpdateCustomer(int id, BusinessCustomerUpdateRequest businessCustomerUpdateRequest, CancellationToken cancellationToken)
+    public async Task<int> UpdateCustomer(int krs, BusinessCustomerUpdateRequest businessCustomerUpdateRequest, CancellationToken cancellationToken)
     {
-        return await _businessCustomerRepository.UpdateCustomer(id, new BusinessCustomer()
+        await BusinessCustomerWithGivenKrsDoesNotExist(krs, cancellationToken);
+        return await _businessCustomerRepository.UpdateCustomer(krs, new BusinessCustomer()
         {
             Address = businessCustomerUpdateRequest.Address,
             BusinessName = businessCustomerUpdateRequest.BusinessName,
             Email = businessCustomerUpdateRequest.Email,
             PhoneNumber = businessCustomerUpdateRequest.PhoneNumber
         }, cancellationToken);
+    }
+
+    private async Task BusinessCustomerWithGivenKrsDoesNotExist(int krs, CancellationToken cancellationToken)
+    {
+        BusinessCustomer? customer = await _businessCustomerRepository.GetBusinessCustomerByKRS(krs, cancellationToken);
+        if (customer == null)
+        {
+            throw new DomainException("Business customer with given KRS does not exist in the system");
+        }
+    }
+
+    private async Task BusinessCustomerWithGivenKrsAlreadyExists(int krs, CancellationToken cancellationToken)
+    {
+        BusinessCustomer? customer = await _businessCustomerRepository.GetBusinessCustomerByKRS(krs, cancellationToken);
+        if (customer!= null)
+        {
+            throw new DomainException("Business customer with given KRS already exists");
+        }
     }
 }
