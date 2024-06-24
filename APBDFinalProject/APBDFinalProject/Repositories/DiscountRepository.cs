@@ -13,7 +13,7 @@ public class DiscountRepository : IDiscountRepository
         _incomeContext = incomeContext;
     }
 
-    public async Task<Discount?> GetBiggestDiscount()
+    public async Task<Discount?> GetBestSavedDiscount()
     {
         return await _incomeContext.Discounts
             .OrderByDescending(d => d.DiscountPercentage)

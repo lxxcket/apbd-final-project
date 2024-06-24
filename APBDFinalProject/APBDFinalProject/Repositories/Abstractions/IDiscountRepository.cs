@@ -4,5 +4,5 @@ namespace APBDFinalProject.Repositories;
 
 public interface IDiscountRepository
 {
-    Task<Discount?> GetBiggestDiscount();
+    Task<Discount?> GetBestSavedDiscount();
 }
