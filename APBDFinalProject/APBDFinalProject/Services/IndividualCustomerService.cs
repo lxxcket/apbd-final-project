@@ -18,6 +18,8 @@ public class IndividualCustomerService : IIndividualCustomerService
     public async Task<int> AddCustomer(IndividualCustomerRequest individualCustomer,
         CancellationToken cancellationToken)
     {
+        await IndividualCustomerWithGivenPeselAlreadyExists(individualCustomer.PESEL, cancellationToken);
+        
         return await _individualCustomerRepository.AddCustomer(new IndividualCustomer()
         {
             PESEL = individualCustomer.PESEL,
@@ -29,10 +31,12 @@ public class IndividualCustomerService : IIndividualCustomerService
         }, cancellationToken);
     }
 
-    public async Task<int> UpdateCustomer(int id, IndividualCustomerUpdateRequest individualCustomer,
+    public async Task<int> UpdateCustomer(int pesel, IndividualCustomerUpdateRequest individualCustomer,
         CancellationToken cancellationToken)
     {
-        return await _individualCustomerRepository.UpdateCustomer(id, new IndividualCustomer()
+        await IndividualCustomerWithGivenPeselDoesNotExist(pesel, cancellationToken);
+        
+        return await _individualCustomerRepository.UpdateCustomer(pesel, new IndividualCustomer()
         {
             FirstName = individualCustomer.FirstName,
             LastName = individualCustomer.LastName,
@@ -42,8 +46,30 @@ public class IndividualCustomerService : IIndividualCustomerService
         }, cancellationToken);
     }
 
-    public async Task DeleteCustomer(int id, CancellationToken cancellationToken)
+    public async Task DeleteCustomer(int pesel, CancellationToken cancellationToken)
     {
-        await _individualCustomerRepository.DeleteCustomer(id, cancellationToken);
+        await IndividualCustomerWithGivenPeselDoesNotExist(pesel, cancellationToken);
+        
+        await _individualCustomerRepository.DeleteCustomer(pesel, cancellationToken);
+    }
+
+    private async Task IndividualCustomerWithGivenPeselDoesNotExist(int pesel, CancellationToken cancellationToken)
+    {
+        IndividualCustomer? individualCustomer = 
+            await _individualCustomerRepository.GetIndividualCustomerByPesel(pesel, cancellationToken);
+        if (individualCustomer == null)
+        {
+            throw new DomainException("Individual customer with given PESEL was not found");
+        }
+    }
+
+    private async Task IndividualCustomerWithGivenPeselAlreadyExists(int pesel, CancellationToken cancellationToken)
+    {
+        IndividualCustomer? individualCustomer =
+            await _individualCustomerRepository.GetIndividualCustomerByPesel(pesel, cancellationToken);
+        if (individualCustomer != null)
+        {
+            throw new DomainException("Individual customer with given PESEL already exists in the system");
+        }
     }
 }
