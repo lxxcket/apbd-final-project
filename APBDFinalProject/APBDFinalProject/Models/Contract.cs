@@ -22,8 +22,10 @@ public class Contract
     public bool IsPaid { get; set; }
     [Required]
     public bool IsSigned { get; set; }
+    [Required]
     [Range(1,4)]
     public int SupportTime { get; set; }
+    
     [Range(3,30)]
     public int DaysSpan { get; set; }
     
