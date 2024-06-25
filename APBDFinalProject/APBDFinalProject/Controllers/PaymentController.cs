@@ -20,16 +20,8 @@ public class PaymentController : ControllerBase
     
     [HttpPost]
     public async Task<IActionResult> MakePayment(PaymentRequest request, CancellationToken cancellationToken)
-    {
-        try
-        {
-            await _paymentService.MakePayment(request, cancellationToken);
-        }
-        catch (DomainException e)
-        {
-            return BadRequest(e.Message);
-        }
-
+    { 
+        await _paymentService.MakePayment(request, cancellationToken);
         return Ok();
     }
 }

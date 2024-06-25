@@ -22,15 +22,8 @@ public class ContractController : ControllerBase
     public async Task<IActionResult> CreateContract(ContractRequest contractRequest,
         CancellationToken cancellationToken)
     {
-        ContractResponse contract;
-        try
-        {
-            contract = await _contractService.CreateContract(contractRequest, cancellationToken);
-        }
-        catch (DomainException e)
-        {
-            return BadRequest(e.Message);
-        }
+        ContractResponse contract
+             = await _contractService.CreateContract(contractRequest, cancellationToken);
 
         return Ok(contract);
     }

@@ -1,5 +1,6 @@
 using System.Text;
 using APBDFinalProject.Contexts;
+using APBDFinalProject.Middlewares;
 using APBDFinalProject.Repositories;
 using APBDFinalProject.Services;
 using APBDFinalProject.Services.Abstractions;
@@ -16,6 +17,7 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
         
         //Registering services
+        
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
         builder.Services.AddControllers();
@@ -28,12 +30,14 @@ public class Program
         builder.Services.AddScoped<IDiscountRepository, DiscountRepository>();
         builder.Services.AddScoped<IContractRepository, ContractRepository>();
         builder.Services.AddScoped<IVersionRepository, VersionRepository>();
+        builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+        
         //
         builder.Services.AddScoped<IBusinessCustomerService, BusinessCustomerService>();
         builder.Services.AddScoped<IContractService, ContractService>();
         builder.Services.AddScoped<IIndividualCustomerService, IndividualCustomerService>();
-        // builder.Services.AddScoped<IMedicamentRepository, MedicamentRepository>();
-        // builder.Services.AddScoped<IPrescriptionRepository, PrescriptionRepository>();
+        builder.Services.AddScoped<IPaymentService, PaymentService>();
+        builder.Services.AddScoped<IIncomeService, IncomeService>();
         //
         // builder.Services.AddScoped<IPrescriptionService, PrescriptionService>();
         // builder.Services.AddScoped<IGetPatientService, GetPatientService>();
@@ -83,6 +87,7 @@ public class Program
         // });
         
         var app = builder.Build();
+        app.UseMiddleware<ExceptionMiddleware>();
 
         //Configuring the HTTP request pipeline
         if (app.Environment.IsDevelopment())

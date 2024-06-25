@@ -19,18 +19,10 @@ public class IncomeController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetActualTotalIncomeForBusiness(CancellationToken cancellationToken, [FromQuery] string currency = "PLN", [FromQuery] bool predictedIncome = false)
     {
-        BusinessIncomeResponse incomeResponse;
-        try
-        {
-            incomeResponse = predictedIncome
+        BusinessIncomeResponse incomeResponse
+         = predictedIncome
                 ? await _incomeService.GetPredicitedTotalBusinessIncome(cancellationToken, currency)
                 : await _incomeService.GetActualTotalBusinessIncome(cancellationToken, currency);
-        }
-        catch (DomainException e)
-        {
-            return BadRequest(e.Message);
-        }
-
         return Ok(incomeResponse);
     }
 }

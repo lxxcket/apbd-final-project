@@ -21,16 +21,8 @@ public class BusinessCustomerController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateBusinessCustomer(BusinessCustomerRequest businessCustomerRequest, CancellationToken cancellationToken)
     {
-        int id;
-        try
-        {
-            id = await _businessCustomerService.AddCustomer(businessCustomerRequest, cancellationToken);
-        }
-        catch (DomainException e)
-        {
-            return BadRequest(e.Message);
-        }
-
+        int id = await _businessCustomerService.AddCustomer(businessCustomerRequest, cancellationToken);
+       
         return Ok(id);
     }
 
@@ -38,15 +30,8 @@ public class BusinessCustomerController : ControllerBase
     public async Task<IActionResult> UpdateBusinessCustomer(int krs, BusinessCustomerUpdateRequest businessCustomerUpdateRequest,
         CancellationToken cancellationToken)
     {
-        try
-        {
             await _businessCustomerService.UpdateCustomer(krs, businessCustomerUpdateRequest, cancellationToken);
-        }
-        catch (DomainException e)
-        {
-            return BadRequest(e.Message);
-        }
-
+            
         return NoContent();
     }
     
