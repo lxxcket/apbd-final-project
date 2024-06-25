@@ -7,6 +7,6 @@ public interface IBusinessCustomerService
     Task<int> AddCustomer(BusinessCustomerRequest businessCustomer, 
         CancellationToken cancellationToken);
 
-    Task<int> UpdateCustomer(int krs, BusinessCustomerUpdateRequest businessCustomerUpdateRequest, 
+    Task<int> UpdateCustomer(long krs, BusinessCustomerUpdateRequest businessCustomerUpdateRequest, 
         CancellationToken cancellationToken);
 }
