@@ -31,7 +31,7 @@ public class IndividualCustomerService : IIndividualCustomerService
         }, cancellationToken);
     }
 
-    public async Task<int> UpdateCustomer(int pesel, IndividualCustomerUpdateRequest individualCustomer,
+    public async Task<int> UpdateCustomer(long pesel, IndividualCustomerUpdateRequest individualCustomer,
         CancellationToken cancellationToken)
     {
         await IndividualCustomerWithGivenPeselDoesNotExist(pesel, cancellationToken);
@@ -46,14 +46,14 @@ public class IndividualCustomerService : IIndividualCustomerService
         }, cancellationToken);
     }
 
-    public async Task DeleteCustomer(int pesel, CancellationToken cancellationToken)
+    public async Task DeleteCustomer(long pesel, CancellationToken cancellationToken)
     {
         await IndividualCustomerWithGivenPeselDoesNotExist(pesel, cancellationToken);
         
         await _individualCustomerRepository.DeleteCustomer(pesel, cancellationToken);
     }
 
-    private async Task IndividualCustomerWithGivenPeselDoesNotExist(int pesel, CancellationToken cancellationToken)
+    private async Task IndividualCustomerWithGivenPeselDoesNotExist(long pesel, CancellationToken cancellationToken)
     {
         IndividualCustomer? individualCustomer = 
             await _individualCustomerRepository.GetIndividualCustomerByPesel(pesel, cancellationToken);
@@ -63,7 +63,7 @@ public class IndividualCustomerService : IIndividualCustomerService
         }
     }
 
-    private async Task IndividualCustomerWithGivenPeselAlreadyExists(int pesel, CancellationToken cancellationToken)
+    private async Task IndividualCustomerWithGivenPeselAlreadyExists(long pesel, CancellationToken cancellationToken)
     {
         IndividualCustomer? individualCustomer =
             await _individualCustomerRepository.GetIndividualCustomerByPesel(pesel, cancellationToken);

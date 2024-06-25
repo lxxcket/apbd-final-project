@@ -21,7 +21,7 @@ public class IndividualCustomerRepository : IIndividualCustomerRepository
         return individualCustomer.Id;
     }
 
-    public async Task<int> UpdateCustomer(int pesel, IndividualCustomer individualCustomer, CancellationToken cancellationToken)
+    public async Task<int> UpdateCustomer(long pesel, IndividualCustomer individualCustomer, CancellationToken cancellationToken)
     {
         var affectedRows = await _context.IndividualCustomers.Where(e => e.PESEL == pesel)
             .ExecuteUpdateAsync(updates =>
@@ -33,7 +33,7 @@ public class IndividualCustomerRepository : IIndividualCustomerRepository
         return affectedRows;
     }
 
-    public async Task DeleteCustomer(int pesel, CancellationToken cancellationToken)
+    public async Task DeleteCustomer(long pesel, CancellationToken cancellationToken)
     {
         var customer = await _context.IndividualCustomers.FirstOrDefaultAsync(c => c.PESEL == pesel, cancellationToken);
         
@@ -41,7 +41,7 @@ public class IndividualCustomerRepository : IIndividualCustomerRepository
         await _context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<IndividualCustomer?> GetIndividualCustomerByPesel(int pesel, CancellationToken cancellationToken)
+    public async Task<IndividualCustomer?> GetIndividualCustomerByPesel(long pesel, CancellationToken cancellationToken)
     {
         return await _context.IndividualCustomers.FirstOrDefaultAsync(c => c.PESEL == pesel, cancellationToken);
     }
