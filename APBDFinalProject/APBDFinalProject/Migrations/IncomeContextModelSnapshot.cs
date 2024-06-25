@@ -30,6 +30,9 @@ namespace APBDFinalProject.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<decimal>("AmountPaid")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<int>("DaysSpan")
                         .HasColumnType("int");
 
@@ -43,9 +46,6 @@ namespace APBDFinalProject.Migrations
                         .HasColumnType("int");
 
                     b.Property<bool>("IsPaid")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsSigned")
                         .HasColumnType("bit");
 
                     b.Property<DateTime>("StartDate")
@@ -137,12 +137,18 @@ namespace APBDFinalProject.Migrations
                     b.Property<int>("IdContract")
                         .HasColumnType("int");
 
+                    b.Property<int>("IdCustomer")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("PaymentDate")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
                     b.HasIndex("IdContract");
+
+                    b.HasIndex("IdCustomer")
+                        .IsUnique();
 
                     b.ToTable("Payments");
                 });
@@ -162,6 +168,11 @@ namespace APBDFinalProject.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<decimal>("YearlyPrice")
                         .HasColumnType("decimal(18,2)");
@@ -208,8 +219,8 @@ namespace APBDFinalProject.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int>("KRS")
-                        .HasColumnType("int");
+                    b.Property<long>("KRS")
+                        .HasColumnType("bigint");
 
                     b.HasIndex("KRS")
                         .IsUnique()
@@ -235,9 +246,9 @@ namespace APBDFinalProject.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
-                    b.Property<int>("PESEL")
+                    b.Property<long>("PESEL")
                         .HasMaxLength(11)
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
                     b.HasIndex("PESEL")
                         .IsUnique()
@@ -273,7 +284,15 @@ namespace APBDFinalProject.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("APBDFinalProject.Models.Customer", "Customer")
+                        .WithOne()
+                        .HasForeignKey("APBDFinalProject.Models.Payment", "IdCustomer")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.Navigation("Contract");
+
+                    b.Navigation("Customer");
                 });
 
             modelBuilder.Entity("APBDFinalProject.Models.Version", b =>

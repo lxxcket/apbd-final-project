@@ -8,7 +8,7 @@ public class IndividualCustomer : Customer
 {
     [Required]
     [MaxLength(11)]
-    public int PESEL { get; set; }
+    public long PESEL { get; set; }
     [Required]
     [MaxLength(20)]
     public string FirstName { get; set; }

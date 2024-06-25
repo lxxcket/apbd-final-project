@@ -28,7 +28,12 @@ public class IncomeContext : DbContext
         modelBuilder.Entity<Customer>().ToTable("Customers");
         modelBuilder.Entity<IndividualCustomer>().ToTable("Individual_Customers");
         modelBuilder.Entity<BusinessCustomer>().ToTable("Business_Customers");
-
+        modelBuilder.Entity<Payment>()
+            .HasOne(p => p.Customer)
+            .WithOne()
+            .HasForeignKey<Payment>(p => p.IdCustomer)
+            .OnDelete(DeleteBehavior.NoAction);
+            
         
         modelBuilder.Entity<IndividualCustomer>(entity =>
             entity.
