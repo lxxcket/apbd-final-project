@@ -7,4 +7,7 @@ public interface ICustomerRepository
     Task<bool> HasContractWithSoftware(int customerId, int versionId, CancellationToken cancellationToken);
     Task<Customer?> GetCustomerById(int id, CancellationToken cancellationToken);
     Task<bool> HadAnyPaidContract(int customerId,CancellationToken cancellationToken);
+
+    Task<(bool isIndividual, bool isDeleted)> IsIndividualCustomerAndDeleted(int customerId,
+        CancellationToken cancellationToken);
 }
