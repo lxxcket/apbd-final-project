@@ -147,8 +147,7 @@ namespace APBDFinalProject.Migrations
 
                     b.HasIndex("IdContract");
 
-                    b.HasIndex("IdCustomer")
-                        .IsUnique();
+                    b.HasIndex("IdCustomer");
 
                     b.ToTable("Payments");
                 });
@@ -285,8 +284,8 @@ namespace APBDFinalProject.Migrations
                         .IsRequired();
 
                     b.HasOne("APBDFinalProject.Models.Customer", "Customer")
-                        .WithOne()
-                        .HasForeignKey("APBDFinalProject.Models.Payment", "IdCustomer")
+                        .WithMany()
+                        .HasForeignKey("IdCustomer")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 

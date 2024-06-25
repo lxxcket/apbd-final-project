@@ -30,8 +30,8 @@ public class IncomeContext : DbContext
         modelBuilder.Entity<BusinessCustomer>().ToTable("Business_Customers");
         modelBuilder.Entity<Payment>()
             .HasOne(p => p.Customer)
-            .WithOne()
-            .HasForeignKey<Payment>(p => p.IdCustomer)
+            .WithMany()
+            .HasForeignKey(p => p.IdCustomer)
             .OnDelete(DeleteBehavior.NoAction);
             
         
