@@ -29,7 +29,7 @@ public class ContractService : IContractService
 
     public async Task<ContractResponse> CreateContract(ContractRequest request, CancellationToken cancellationToken)
     {
-        ContractStartDateInPast(request.StartDate);
+        ValidateDate(request.StartDate,request.EndDate, request.DaysSpan);
         Customer customer = await CustomerExistsAndRetrieve(request.IdCustomer, cancellationToken);
         Version version = await VersionExistsAndRetrieve(request.IdVersion, cancellationToken);
         await CustomerHaveUnpaidContractWithSameSoftware(customer.Id, version.Id, cancellationToken);
@@ -75,10 +75,7 @@ public class ContractService : IContractService
 
     private void ContractStartDateInPast(DateTime startDate)
     {
-        if (startDate < DateTime.Now)
-        {
-            throw new DomainException("Start date of the contract can't be in the past");
-        }
+        
     }
 
     private async Task<Customer> CustomerExistsAndRetrieve(int id, CancellationToken cancellationToken)
@@ -139,5 +136,13 @@ public class ContractService : IContractService
 
         return fullPrice;
     }
-    
+    public void ValidateDate(DateTime startDate, DateTime endDate, int daySpan)
+    {
+        if (startDate < DateTime.Now)
+            throw new DomainException("Start date of the contract can't be in the past");
+        if (endDate < startDate)
+            throw new DomainException("End date cannot be earlier than start date.");
+        if (endDate < startDate.AddDays(daySpan))
+            throw new DomainException("End date cannot be earlier than start date plus the day span.");
+    }
 }   
