@@ -31,6 +31,7 @@ public class Program
         builder.Services.AddScoped<IContractRepository, ContractRepository>();
         builder.Services.AddScoped<IVersionRepository, VersionRepository>();
         builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+        builder.Services.AddScoped<IAppUserRepository, AppUserRepository>();
         
         //
         builder.Services.AddScoped<IBusinessCustomerService, BusinessCustomerService>();
@@ -38,53 +39,49 @@ public class Program
         builder.Services.AddScoped<IIndividualCustomerService, IndividualCustomerService>();
         builder.Services.AddScoped<IPaymentService, PaymentService>();
         builder.Services.AddScoped<IIncomeService, IncomeService>();
+        builder.Services.AddScoped<ISecurityService, SecurityService>();
         //
-        // builder.Services.AddScoped<IPrescriptionService, PrescriptionService>();
-        // builder.Services.AddScoped<IGetPatientService, GetPatientService>();
-        // builder.Services.AddScoped<IUserRepository, UserRepository>();
-        // builder.Services.AddScoped<IUserService, UserService>();
         
-        
-        // builder.Services.AddAuthentication(options =>
-        // {
-        //     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        //     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        // }).AddJwtBearer(opt =>
-        // {
-        //     opt.TokenValidationParameters = new TokenValidationParameters
-        //     {
-        //         ValidateIssuer = true,  
-        //         ValidateAudience = true,
-        //         ValidateLifetime = true,
-        //         ClockSkew = TimeSpan.FromMinutes(2),
-        //         ValidIssuer = "https://localhost:5181", 
-        //         ValidAudience = "https://localhost:5181",
-        //         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Secret"]))
-        //     };
-        //     opt.Events = new JwtBearerEvents
-        //     {
-        //         OnAuthenticationFailed = context =>
-        //         {
-        //             if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
-        //             {
-        //                 context.Response.Headers.Add("Token-expired", "true");
-        //             }
-        //             return Task.CompletedTask;
-        //         }
-        //     };
-        // }).AddJwtBearer("IgnoreTokenExpirationScheme",opt =>
-        // {
-        //     opt.TokenValidationParameters = new TokenValidationParameters
-        //     {
-        //         ValidateIssuer = true,   
-        //         ValidateAudience = true, 
-        //         ValidateLifetime = false,
-        //         ClockSkew = TimeSpan.FromMinutes(2),
-        //         ValidIssuer = "https://localhost:5181", 
-        //         ValidAudience = "https://localhost:5181", 
-        //         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Secret"]))
-        //     };
-        // });
+        builder.Services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        }).AddJwtBearer(opt =>
+        {
+            opt.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,  
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ClockSkew = TimeSpan.FromMinutes(2),
+                ValidIssuer = "https://localhost:5222", 
+                ValidAudience = "https://localhost:5222",
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Secret"]))
+            };
+            opt.Events = new JwtBearerEvents
+            {
+                OnAuthenticationFailed = context =>
+                {
+                    if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
+                    {
+                        context.Response.Headers.Add("Token-expired", "true");
+                    }
+                    return Task.CompletedTask;
+                }
+            };
+        }).AddJwtBearer("IgnoreTokenExpirationScheme",opt =>
+        {
+            opt.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,   
+                ValidateAudience = true, 
+                ValidateLifetime = false,
+                ClockSkew = TimeSpan.FromMinutes(2),
+                ValidIssuer = "https://localhost:5222", 
+                ValidAudience = "https://localhost:5222", 
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Secret"]))
+            };
+        });
         
         var app = builder.Build();
         app.UseMiddleware<ExceptionMiddleware>();

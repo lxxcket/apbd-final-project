@@ -14,6 +14,7 @@ public class IncomeContext : DbContext
     public DbSet<Software> Softwares { get; set; }
     public DbSet<Payment> Payments { get; set; }
     public DbSet<Version> Versions { get; set; }
+    public DbSet<AppUser> Users { get; set; }
     protected IncomeContext()
     {
     }
