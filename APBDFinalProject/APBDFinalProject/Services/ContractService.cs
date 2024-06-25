@@ -112,7 +112,7 @@ public class ContractService : IContractService
         decimal discount = 0;
         if (await _customerRepository.HadAnyPaidContract(customer.Id, cancellationToken))
         {
-            discount = new decimal(0.05);
+            discount = new decimal(5.00);
             
         }
 
@@ -129,8 +129,12 @@ public class ContractService : IContractService
         decimal fullPrice = softwarePrice + yearsOfSupport * 1000;
         if (!discount.Equals(0))
         {
-            fullPrice *= discount;
-            return fullPrice;
+            decimal percentageDecimal = discount / 100.0m;
+
+            // Calculate discount amount
+            decimal discountAmount = fullPrice * percentageDecimal;
+            
+            return fullPrice - discountAmount;
         }
 
         return fullPrice;
