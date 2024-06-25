@@ -21,7 +21,7 @@ public class Contract
     [Required]
     public bool IsPaid { get; set; }
     [Required]
-    public bool IsSigned { get; set; }
+    public decimal AmountPaid { get; set; }
     [Required]
     [Range(1,4)]
     public int SupportTime { get; set; }
