@@ -7,7 +7,7 @@ namespace APBDFinalProject.Models;
 public class BusinessCustomer : Customer
 {
     [Required]
-    public int KRS { get; set; }
+    public long KRS { get; set; }
     [Required]
     [MaxLength(50)]
     public string BusinessName { get; set; }

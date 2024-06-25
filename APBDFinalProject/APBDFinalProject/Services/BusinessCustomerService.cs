@@ -28,7 +28,7 @@ public class BusinessCustomerService : IBusinessCustomerService
         }, cancellationToken);
     }
 
-    public async Task<int> UpdateCustomer(int krs, BusinessCustomerUpdateRequest businessCustomerUpdateRequest, CancellationToken cancellationToken)
+    public async Task<int> UpdateCustomer(long krs, BusinessCustomerUpdateRequest businessCustomerUpdateRequest, CancellationToken cancellationToken)
     {
         await BusinessCustomerWithGivenKrsDoesNotExist(krs, cancellationToken);
         return await _businessCustomerRepository.UpdateCustomer(krs, new BusinessCustomer()
@@ -40,7 +40,7 @@ public class BusinessCustomerService : IBusinessCustomerService
         }, cancellationToken);
     }
 
-    private async Task BusinessCustomerWithGivenKrsDoesNotExist(int krs, CancellationToken cancellationToken)
+    private async Task BusinessCustomerWithGivenKrsDoesNotExist(long krs, CancellationToken cancellationToken)
     {
         BusinessCustomer? customer = await _businessCustomerRepository.GetBusinessCustomerByKRS(krs, cancellationToken);
         if (customer == null)
@@ -49,7 +49,7 @@ public class BusinessCustomerService : IBusinessCustomerService
         }
     }
 
-    private async Task BusinessCustomerWithGivenKrsAlreadyExists(int krs, CancellationToken cancellationToken)
+    private async Task BusinessCustomerWithGivenKrsAlreadyExists(long krs, CancellationToken cancellationToken)
     {
         BusinessCustomer? customer = await _businessCustomerRepository.GetBusinessCustomerByKRS(krs, cancellationToken);
         if (customer!= null)

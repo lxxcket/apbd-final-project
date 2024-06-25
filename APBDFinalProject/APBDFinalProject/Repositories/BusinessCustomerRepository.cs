@@ -20,7 +20,7 @@ public class BusinessCustomerRepository : IBusinessCustomerRepository
         return businessCustomer.Id;
     }
 
-    public async Task<int> UpdateCustomer(int krs, BusinessCustomer businessCustomer, CancellationToken cancellationToken)
+    public async Task<int> UpdateCustomer(long krs, BusinessCustomer businessCustomer, CancellationToken cancellationToken)
     {
         var affectedRows = await _context.BusinessCustomers.Where(e => e.KRS == krs)
             .ExecuteUpdateAsync(updates =>
@@ -31,7 +31,7 @@ public class BusinessCustomerRepository : IBusinessCustomerRepository
         return affectedRows;
     }
 
-    public async Task<BusinessCustomer?> GetBusinessCustomerByKRS(int krs, CancellationToken cancellationToken)
+    public async Task<BusinessCustomer?> GetBusinessCustomerByKRS(long krs, CancellationToken cancellationToken)
     {
         return await _context.BusinessCustomers.FirstOrDefaultAsync(c => c.KRS == krs, cancellationToken);
     }
