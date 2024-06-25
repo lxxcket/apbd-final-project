@@ -18,6 +18,7 @@ public class Payment
     public decimal AmountPaid { get; set; }
     [ForeignKey(nameof(IdContract))]
     public virtual Contract Contract { get; set; }
+    
     [ForeignKey(nameof(IdCustomer))]
     public virtual Customer Customer { get; set; }
 }
