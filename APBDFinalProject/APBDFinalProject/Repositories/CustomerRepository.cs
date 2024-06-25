@@ -30,4 +30,12 @@ public class CustomerRepository : ICustomerRepository
         return await _context.Customers.AnyAsync(c => c.Id == customerId &&
                                                       c.Contracts.Any(contract => contract.IsPaid), cancellationToken);
     }
+
+    public async Task<(bool isIndividual, bool isDeleted)> IsIndividualCustomerAndDeleted(int customerId, CancellationToken cancellationToken)
+    {
+        var individualCustomer = await _context.IndividualCustomers
+            .FirstOrDefaultAsync(c => c.Id == customerId, cancellationToken);
+
+        return individualCustomer != null ? (true, individualCustomer.IsDeleted) : (false, false);
+    }
 }

@@ -32,7 +32,8 @@ public class ContractService : IContractService
         ContractStartDateInPast(request.StartDate);
         Customer customer = await CustomerExistsAndRetrieve(request.IdCustomer, cancellationToken);
         Version version = await VersionExistsAndRetrieve(request.IdVersion, cancellationToken);
-        CustomerHaveUnpaidContractWithSameSoftware(customer.Id, version.Id, cancellationToken);
+        await CustomerHaveUnpaidContractWithSameSoftware(customer.Id, version.Id, cancellationToken);
+        await CustomerIsIndividualAndDeleted(customer.Id, cancellationToken);
         decimal discount = await GetBestDiscount(customer, cancellationToken);
         decimal contractFullPrice = CalculateFullPrice(version.Software.YearlyPrice, request.SupportTime, discount);
 
@@ -46,7 +47,7 @@ public class ContractService : IContractService
             DaysSpan = request.DaysSpan,
             SupportTime = request.SupportTime,
             IsPaid = false,
-            IsSigned = false
+            AmountPaid = 0
         }, cancellationToken);
 
        return new ContractResponse()
@@ -60,8 +61,16 @@ public class ContractService : IContractService
            DaysSpan = contract.DaysSpan,
            SupportTime = contract.SupportTime,
            IsPaid = contract.IsPaid,
-           IsSigned = contract.IsSigned
+           AmountPaid = contract.AmountPaid
        };
+    }
+
+    private async Task CustomerIsIndividualAndDeleted(int customerId, CancellationToken cancellationToken)
+    {
+        var res = await _customerRepository.IsIndividualCustomerAndDeleted(customerId, cancellationToken);
+        if (res == (true, true))
+            throw new DomainException(
+                "Individual customer was deleted, you can't create contract for deleted customer");
     }
 
     private void ContractStartDateInPast(DateTime startDate)
@@ -89,11 +98,10 @@ public class ContractService : IContractService
         {
             throw new DomainException("Version with given id was not found");
         }
-
         return version;
     }
 
-    private async void CustomerHaveUnpaidContractWithSameSoftware(int customerId, int versionId, CancellationToken cancellationToken)
+    private async Task CustomerHaveUnpaidContractWithSameSoftware(int customerId, int versionId, CancellationToken cancellationToken)
     {
         if(await _customerRepository.HasContractWithSoftware(customerId, versionId, cancellationToken))
             throw new DomainException("Customer have unpaid contract regarding same software");
