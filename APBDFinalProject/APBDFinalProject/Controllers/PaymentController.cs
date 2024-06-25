@@ -1,6 +1,7 @@
 using APBDFinalProject.Exceptions;
 using APBDFinalProject.RequestModels;
 using APBDFinalProject.Services.Abstractions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace APBDFinalProject.Controllers;
@@ -17,7 +18,7 @@ public class PaymentController : ControllerBase
     {
         _paymentService = paymentService;
     }
-    
+    [Authorize(Roles = "user,admin")]
     [HttpPost]
     public async Task<IActionResult> MakePayment(PaymentRequest request, CancellationToken cancellationToken)
     { 

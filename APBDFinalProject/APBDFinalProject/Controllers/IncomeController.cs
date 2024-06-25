@@ -1,6 +1,7 @@
 using APBDFinalProject.Exceptions;
 using APBDFinalProject.ResponseModels;
 using APBDFinalProject.Services.Abstractions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace APBDFinalProject.Controllers;
@@ -16,6 +17,7 @@ public class IncomeController : ControllerBase
         _incomeService = incomeService;
     }
 
+    [Authorize(Roles = "user,admin")]
     [HttpGet]
     public async Task<IActionResult> GetActualTotalIncomeForBusiness(CancellationToken cancellationToken, [FromQuery] string currency = "PLN", [FromQuery] bool predictedIncome = false)
     {

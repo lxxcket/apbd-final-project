@@ -1,6 +1,7 @@
 using APBDFinalProject.Exceptions;
 using APBDFinalProject.RequestModels;
 using APBDFinalProject.Services.Abstractions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -18,20 +19,20 @@ public class BusinessCustomerController : ControllerBase
         _businessCustomerService = businessCustomerService;
     }
 
+    [Authorize(Roles = "admin")]
     [HttpPost]
     public async Task<IActionResult> CreateBusinessCustomer(BusinessCustomerRequest businessCustomerRequest, CancellationToken cancellationToken)
     {
         int id = await _businessCustomerService.AddCustomer(businessCustomerRequest, cancellationToken);
-       
         return Ok(id);
     }
 
+    [Authorize(Roles = "admin")]
     [HttpPut("{krs:long}")]
     public async Task<IActionResult> UpdateBusinessCustomer(int krs, BusinessCustomerUpdateRequest businessCustomerUpdateRequest,
         CancellationToken cancellationToken)
     {
-            await _businessCustomerService.UpdateCustomer(krs, businessCustomerUpdateRequest, cancellationToken);
-            
+        await _businessCustomerService.UpdateCustomer(krs, businessCustomerUpdateRequest, cancellationToken);
         return NoContent();
     }
     

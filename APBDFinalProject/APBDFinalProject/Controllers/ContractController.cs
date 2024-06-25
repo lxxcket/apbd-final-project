@@ -2,6 +2,7 @@ using APBDFinalProject.Exceptions;
 using APBDFinalProject.RequestModels;
 using APBDFinalProject.ResponseModels;
 using APBDFinalProject.Services.Abstractions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace APBDFinalProject.Controllers;
@@ -18,13 +19,13 @@ public class ContractController : ControllerBase
         _contractService = contractService;
     }
 
+    [Authorize(Roles = "user,admin")]
     [HttpPost]
     public async Task<IActionResult> CreateContract(ContractRequest contractRequest,
         CancellationToken cancellationToken)
     {
         ContractResponse contract
              = await _contractService.CreateContract(contractRequest, cancellationToken);
-
         return Ok(contract);
     }
     
